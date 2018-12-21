@@ -35,7 +35,7 @@ public class Main {
 				}
 				
 				int ans = 0;
-				for(int j = 0; j < n.length-mCnt; j++) {
+				for(int j = 0; j <= n.length-mCnt; j++) {
 					int[] cutAr = new int[mCnt];
 					for(int k = j; k < j+mCnt; k++) {
 						cutAr[k - j] = Integer.parseInt(arN[k]);
