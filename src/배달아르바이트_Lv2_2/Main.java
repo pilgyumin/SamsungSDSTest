@@ -19,10 +19,10 @@ public class Main {
 
 	private static int dijkstra(int start, int cnt, ArrayList<Integer> arC, boolean[] bl, int d) {
 		if(cnt >= end+1) {
-//			System.out.println("final");
+			System.out.println("final");
+			System.out.println("ans : " + d);
 			if(ans > d) {
 				ans = d;
-//				System.out.println("ans : " + ans);
 				return 0;
 			}
 			return 0;
@@ -38,11 +38,11 @@ public class Main {
 		
 		int dis = d;
 		bAr[arr.indexOf(start)] = true;
-//		for(int i = 0; i < arC.size(); i++) {
-//			System.out.print(bAr[i] + " ");
-//		}
-//		System.out.println();
-//		System.out.println(start + "-------------" );
+		for(int i = 0; i < arC.size(); i++) {
+			System.out.print(bAr[i] + " ");
+		}
+		System.out.println();
+		System.out.println(start + "-------------" );
 		visited = new boolean[n];
 		int dist[] = new int[n];
 		for (int i = 0; i < n; i++) {
@@ -63,11 +63,11 @@ public class Main {
 					dist[j] = dist[minvertex] + map[minvertex][j];
 				}
 			}
-//			 for (int j = 0; j < n; j++) {
-//			 System.out.print(dist[j] + " ");
-//			 }
-//			 System.out.println();
-//			 System.out.println();
+			 for (int j = 0; j < n; j++) {
+			 System.out.print(dist[j] + " ");
+			 }
+			 System.out.println();
+			 System.out.println();
 		}
 		
 		int min = 987654321;
@@ -83,7 +83,7 @@ public class Main {
 				}
 			}
 		}
-//		System.out.println(min);
+		System.out.println("min : " + min);
 		boolean check = true;
 		for(int j = 0; j < bAr.length; j++) {
 			if(!bAr[j]) {
@@ -97,12 +97,20 @@ public class Main {
 			dijkstra(2,cnt+1,arr,bAr,dis+min);
 			return 0;
 		}
-
 		for (int j = 0; j < n; j++) {
 			if(min == dist[j] && arr.contains(j) && !bAr[arr.indexOf(j)]) {
-//				System.out.println(j + " " + (dis+min));
+				System.out.println(cnt+ " " + j + " " + (dis+min));
+			}
+		}
+		for (int j = 0; j < n; j++) {
+			if(min == dist[j] && arr.contains(j) && !bAr[arr.indexOf(j)]) {
+				System.out.println(cnt+ " " + j + " " + (dis+min));
 				dijkstra(j,cnt+1,arr,bAr,dis+min);
-//				System.out.println("out!!!");
+				System.out.println("out!!!");
+				for(int i = 0; i < arC.size(); i++) {
+					System.out.print(bAr[i] + " ");
+				}
+				System.out.println();
 			}
 		}
 //		for (int j = 0; j < ar.length; j++) {

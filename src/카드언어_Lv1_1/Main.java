@@ -29,26 +29,11 @@ public class Main {
 						continue;
 					}
 					else {
-						int size = li.size();
-						liF = new LinkedList<Integer>();
-						liB = new LinkedList<Integer>();
-						for(int k = 0; k < size; k++) {
-							liF.add(li.get(k));
-							liB.add(li.get(k));
+						if(ar.get(j) >= li.getFirst()) {
+							li.addFirst(ar.get(j));
 						}
-						liF.addFirst(ar.get(j));
-						liB.addLast(ar.get(j));
-						
-				
-						for(int k = 0; k < size+1; k++) {
-							if(liF.get(k) > liB.get(k)) {
-								li = liF;
-								break;
-							}
-							else if(liF.get(k) < liB.get(k)) {
-								li = liB;
-								break;
-							}
+						else {
+							li.addLast(ar.get(j));
 						}
 					}
 				}
