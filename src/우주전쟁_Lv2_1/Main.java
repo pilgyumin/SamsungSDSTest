@@ -46,17 +46,62 @@ public class Main {
 				int b = Integer.parseInt(nmb[2]);
 
 				LinkedList<Missile> solo = new LinkedList<Missile>();
+				LinkedList<Missile> endso = new LinkedList<Missile>();
+				LinkedList<Missile> enddo = new LinkedList<Missile>();
 				ArrayList<Missile> doubl = new ArrayList<Missile>();
 				for (int j = 0; j < m; j++) {
 					String[] mStr = br.readLine().split(" ");
 					Missile mi = new Missile(Integer.parseInt(mStr[0]), Integer.parseInt(mStr[1]));
 					if (mi.power >= b) {
 						solo.add(mi);
+						endso.add(mi);
 					} else {
 						doubl.add(mi);
+						enddo.add(mi);
 					}
 				}
-
+				Collections.sort(solo);
+				Collections.sort(doubl);
+				Collections.sort(endso);
+				Collections.sort(enddo);
+				
+				int cc = 2;
+				boolean pass = true;
+				while (cc > 0) {
+					if(endso.size() >= 1 && endso.getLast().quantity >= cc) {
+						endso.getLast().quantity--;
+						cc--;
+						continue;
+					}
+					else if(endso.size() >= 1 && endso.getLast().quantity == 1) {
+						endso.removeLast();
+						cc--;
+						continue;
+					}
+					else if(enddo.size() >= 1 && enddo.getLast().quantity >= 2) {
+						if(enddo.getLast().power * 2 < b) {
+							pass = false;
+							break;
+						}
+						cc--;
+						enddo.getLast().quantity--;
+						continue;
+					}
+					else if(endso.size() > 1 && enddo.getLast().quantity == 1) {
+						int a = enddo.removeLast().power;
+						int x = enddo.getLast().power;
+						System.out.println(a + " " + x);
+						if(a + x < b) {
+							pass = false;
+							break;
+						}
+						cc--;
+						continue;
+					}
+					pass = false;
+					break;
+				}
+				System.out.println(pass);
 //				int cc = 0;
 //				boolean end = true;
 //				while(cc < 2) {
@@ -106,74 +151,93 @@ public class Main {
 
 				int shield = b;
 				int sum = 0;
-				while (n > 0) {
-					// 한 개로 부심
-					if (solo.getFirst().quantity == shield) {
-						n -= solo.getFirst().quantity;
-						sum += shield * solo.getFirst().quantity;
-						doubl.remove(0);
-					}
-					// 두 개로 부심(둘 다 방어력보다 낮은 미사일)
-					int dsize = doubl.size();
-					for (int j = 0; j < dsize; j++) {
-						for (int k = dsize - 1; k >= j + 1; k--) {
-							if (doubl.get(j).power + doubl.get(k).power < shield) {
-								break;
+				if(pass) {
+					while (n > 0) {
+						// 한 개로 부심
+						if (solo.size() >= 1 && solo.getFirst().power== shield) {
+							n -= 1;
+							sum += shield;
+							if(solo.getFirst().quantity > 1) {
+								solo.getFirst().quantity--;
 							}
-							if (doubl.get(j).power + doubl.get(k).power == shield) {
-								if (doubl.get(j).quantity > doubl.get(k).quantity) {
-									n -= doubl.get(k).quantity;
-									sum += shield * doubl.get(k).quantity;
-									doubl.get(j).quantity -= doubl.get(k).quantity;
-									doubl.remove(k);
-								} else if (doubl.get(j).quantity < doubl.get(k).quantity) {
-									n -= doubl.get(j).quantity;
-									sum += shield * doubl.get(j).quantity;
-									doubl.get(k).quantity -= doubl.get(j).quantity;
-									doubl.remove(j);
-								} else {
-									n -= doubl.get(j).quantity;
-									sum += shield * doubl.get(k).quantity;
-									doubl.remove(k);
-									doubl.remove(j);
+							else if(solo.getFirst().quantity == 1) {
+								solo.removeFirst();
+							}
+						}
+						// 두 개로 부심(둘 다 방어력보다 낮은 미사일)
+						int dsize = doubl.size();
+						for (int j = 0; j < dsize; j++) {
+							for (int k = dsize - 1; k >= j + 1; k--) {
+								if (doubl.get(j).power + doubl.get(k).power < shield) {
+									break;
+								}
+								if (doubl.get(j).power + doubl.get(k).power == shield) {
+									if (doubl.get(j).quantity > doubl.get(k).quantity) {
+										n -= doubl.get(k).quantity;
+										sum += shield * doubl.get(k).quantity;
+										doubl.get(j).quantity -= doubl.get(k).quantity;
+										doubl.remove(k);
+									} else if (doubl.get(j).quantity < doubl.get(k).quantity) {
+										n -= doubl.get(j).quantity;
+										sum += shield * doubl.get(j).quantity;
+										doubl.get(k).quantity -= doubl.get(j).quantity;
+										doubl.remove(j);
+									} else {
+										n -= doubl.get(j).quantity;
+										sum += shield * doubl.get(k).quantity;
+										doubl.remove(k);
+										doubl.remove(j);
+									}
 								}
 							}
 						}
-					}
-					// 두 개로 부심(하나는 솔로 하나는 더블용 미사일)
-					dsize = doubl.size();
-					int ssize = solo.size();
-					for (int j = 0; j < ssize; j++) {
-						for (int k = 0; k < dsize; k++) {
-							if (solo.get(j).power + doubl.get(k).power > shield) {
-								break;
-							}
-							if (solo.get(j).power + doubl.get(k).power == shield) {
-								if (solo.get(j).quantity > doubl.get(k).quantity) {
-									n -= doubl.get(k).quantity;
-									sum += shield * doubl.get(k).quantity;
-									solo.get(j).quantity -= doubl.get(k).quantity;
-									doubl.remove(k);
-								} else if (solo.get(j).quantity < doubl.get(k).quantity) {
-									n -= solo.get(j).quantity;
-									sum += shield * solo.get(j).quantity;
-									doubl.get(k).quantity -= solo.get(j).quantity;
-									solo.remove(j);
-								} else {
-									n -= solo.get(j).quantity;
-									sum += shield * solo.get(j).quantity;
-									doubl.remove(k);
-									solo.remove(j);
+						// 두 개로 부심(하나는 솔로 하나는 더블용 미사일)
+						dsize = doubl.size();
+						int ssize = solo.size();
+						if(ssize >= 1) {
+							for (int j = 0; j < ssize; j++) {
+								if(dsize == 0) {
+									break;
+								}
+								for (int k = 0; k < dsize; k++) {
+									if (solo.get(j).power + doubl.get(k).power > shield) {
+										break;
+									}
+									if (solo.get(j).power + doubl.get(k).power == shield) {
+										if (solo.get(j).quantity > doubl.get(k).quantity) {
+											n -= doubl.get(k).quantity;
+											sum += shield * doubl.get(k).quantity;
+											solo.get(j).quantity -= doubl.get(k).quantity;
+											doubl.remove(k);
+										} else if (solo.get(j).quantity < doubl.get(k).quantity) {
+											n -= solo.get(j).quantity;
+											sum += shield * solo.get(j).quantity;
+											doubl.get(k).quantity -= solo.get(j).quantity;
+											solo.remove(j);
+										} else {
+											n -= solo.get(j).quantity;
+											sum += shield * solo.get(j).quantity;
+											doubl.remove(k);
+											solo.remove(j);
+										}
+									}
 								}
 							}
 						}
+						
+						shield++;
 					}
-					shield++;
+					if (n < 0) {
+						sum -= Math.abs(n) * shield;
+					}
+					System.out.printf("#%d %d\n", i, sum);
 				}
-				if (n < 0) {
-					sum -= Math.abs(n) * shield;
+				else {
+					System.out.printf("#%d %d\n", i, -1);
 				}
-
+				
+				
+				
 //				while (count < 2 && end) {
 //					find = 0;
 //					int min2 = 987654321;
@@ -245,7 +309,7 @@ public class Main {
 //					count++;
 //				}
 
-				System.out.printf("#%d %d\n", i, sum);
+				
 
 			}
 		} catch (NumberFormatException | IOException e) {

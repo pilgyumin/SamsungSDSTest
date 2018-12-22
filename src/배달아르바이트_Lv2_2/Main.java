@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.PriorityQueue;
 
 public class Main {
  
@@ -113,15 +112,7 @@ public class Main {
 				System.out.println();
 			}
 		}
-//		for (int j = 0; j < ar.length; j++) {
-//			pq.add(ar[j]);
-//		}
-//		// System.out.println(dist[pq.peek().num]);
-//		if (pq.size() == 1 && pq.peek().num != s - 1) {
-//			pq.add(new Vertex(s - 1, 987654321));
-//		}
-//		ans += dist[pq.peek().num];
-//		start = pq.poll().num;
+
 
 		return ans;
 	}
