@@ -101,7 +101,7 @@ public class Main {
 					pass = false;
 					break;
 				}
-				System.out.println(pass);
+//				System.out.println(pass);
 //				int cc = 0;
 //				boolean end = true;
 //				while(cc < 2) {
