@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
+import java.util.PriorityQueue;
 
 public class Main {
 
@@ -34,7 +35,7 @@ public class Main {
 		}
 
 	}
-
+	
 	public static void main(String[] args) {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		try {
@@ -44,276 +45,103 @@ public class Main {
 				int n = Integer.parseInt(nmb[0]);
 				int m = Integer.parseInt(nmb[1]);
 				int b = Integer.parseInt(nmb[2]);
-
-				LinkedList<Missile> solo = new LinkedList<Missile>();
-				LinkedList<Missile> endso = new LinkedList<Missile>();
-				LinkedList<Missile> enddo = new LinkedList<Missile>();
+				
+				PriorityQueue<Missile> pq = new PriorityQueue<Missile>();
+				
 				ArrayList<Missile> doubl = new ArrayList<Missile>();
+				
 				for (int j = 0; j < m; j++) {
 					String[] mStr = br.readLine().split(" ");
 					Missile mi = new Missile(Integer.parseInt(mStr[0]), Integer.parseInt(mStr[1]));
 					if (mi.power >= b) {
-						solo.add(mi);
-						endso.add(mi);
-					} else {
+						pq.add(mi);
+					} 
+					else {
 						doubl.add(mi);
-						enddo.add(mi);
 					}
 				}
-				Collections.sort(solo);
-				Collections.sort(doubl);
-				Collections.sort(endso);
-				Collections.sort(enddo);
 				
-				int cc = 2;
-				boolean pass = true;
-				while (cc > 0) {
-					if(endso.size() >= 1 && endso.getLast().quantity >= cc) {
-						endso.getLast().quantity--;
-						cc--;
-						continue;
-					}
-					else if(endso.size() >= 1 && endso.getLast().quantity == 1) {
-						endso.removeLast();
-						cc--;
-						continue;
-					}
-					else if(enddo.size() >= 1 && enddo.getLast().quantity >= 2) {
-						if(enddo.getLast().power * 2 < b) {
-							pass = false;
-							break;
-						}
-						cc--;
-						enddo.getLast().quantity--;
-						continue;
-					}
-					else if(endso.size() > 1 && enddo.getLast().quantity == 1) {
-						int a = enddo.removeLast().power;
-						int x = enddo.getLast().power;
-						System.out.println(a + " " + x);
-						if(a + x < b) {
-							pass = false;
-							break;
-						}
-						cc--;
-						continue;
-					}
-					pass = false;
-					break;
-				}
-//				System.out.println(pass);
-//				int cc = 0;
-//				boolean end = true;
-//				while(cc < 2) {
-//					int min3 = 987654321;
-//					
-//					if(ar2.get(ar2.size()-1).power >= b) {
-//						if(ar2.get(ar2.size()-1).quantity > 1) {
-//							ar2.get(ar2.size()-1).quantity--;
-//						}
-//						else if(ar2.get(ar2.size()-1).quantity == 1) {
-//							ar2.remove(ar2.size()-1);
-//						}
-//					}
-//					else {
-//						if(ar.size() >= 2) {
-//							if(ar2.get(ar2.size()-1).power + ar2.get(ar2.size()-2).power < b) {
-//								end = false;
-//								break;
-//							}
-//							if(ar2.get(ar2.size()-1).quantity > 1) {
-//								ar2.get(ar2.size()-1).quantity--;
-//							}
-//							else if(ar2.get(ar2.size()-1).quantity == 1) {
-//								ar2.remove(ar2.size()-1);
-//							}
-//							if(ar2.get(ar2.size()-2).quantity > 1) {
-//								ar2.get(ar2.size()-2).quantity--;
-//							}
-//							else if(ar2.get(ar2.size()-2).quantity == 1) {
-//								ar2.remove(ar2.size()-2);
-//							}
-//						}
-//						else {
-//							if(ar2.get(ar2.size()-1).quantity > 1) {
-//								ar2.get(ar2.size()-1).quantity--;
-//							}
-//							else if(ar2.get(ar2.size()-1).quantity == 1) {
-//								ar2.remove(ar2.size()-1);
-//							}
-//						}
-//						
-//					}
-//					
-//					
-//					cc++;
-//				}
-
-				int shield = b;
-				int sum = 0;
-				if(pass) {
-					while (n > 0) {
-						// 한 개로 부심
-						if (solo.size() >= 1 && solo.getFirst().power== shield) {
-							n -= 1;
-							sum += shield;
-							if(solo.getFirst().quantity > 1) {
-								solo.getFirst().quantity--;
-							}
-							else if(solo.getFirst().quantity == 1) {
-								solo.removeFirst();
-							}
-						}
-						// 두 개로 부심(둘 다 방어력보다 낮은 미사일)
-						int dsize = doubl.size();
-						for (int j = 0; j < dsize; j++) {
-							for (int k = dsize - 1; k >= j + 1; k--) {
-								if (doubl.get(j).power + doubl.get(k).power < shield) {
-									break;
-								}
-								if (doubl.get(j).power + doubl.get(k).power == shield) {
-									if (doubl.get(j).quantity > doubl.get(k).quantity) {
-										n -= doubl.get(k).quantity;
-										sum += shield * doubl.get(k).quantity;
-										doubl.get(j).quantity -= doubl.get(k).quantity;
-										doubl.remove(k);
-									} else if (doubl.get(j).quantity < doubl.get(k).quantity) {
-										n -= doubl.get(j).quantity;
-										sum += shield * doubl.get(j).quantity;
-										doubl.get(k).quantity -= doubl.get(j).quantity;
-										doubl.remove(j);
-									} else {
-										n -= doubl.get(j).quantity;
-										sum += shield * doubl.get(k).quantity;
-										doubl.remove(k);
-										doubl.remove(j);
-									}
-								}
-							}
-						}
-						// 두 개로 부심(하나는 솔로 하나는 더블용 미사일)
-						dsize = doubl.size();
-						int ssize = solo.size();
-						if(ssize >= 1) {
-							for (int j = 0; j < ssize; j++) {
-								if(dsize == 0) {
-									break;
-								}
-								for (int k = 0; k < dsize; k++) {
-									if (solo.get(j).power + doubl.get(k).power > shield) {
-										break;
-									}
-									if (solo.get(j).power + doubl.get(k).power == shield) {
-										if (solo.get(j).quantity > doubl.get(k).quantity) {
-											n -= doubl.get(k).quantity;
-											sum += shield * doubl.get(k).quantity;
-											solo.get(j).quantity -= doubl.get(k).quantity;
-											doubl.remove(k);
-										} else if (solo.get(j).quantity < doubl.get(k).quantity) {
-											n -= solo.get(j).quantity;
-											sum += shield * solo.get(j).quantity;
-											doubl.get(k).quantity -= solo.get(j).quantity;
-											solo.remove(j);
-										} else {
-											n -= solo.get(j).quantity;
-											sum += shield * solo.get(j).quantity;
-											doubl.remove(k);
-											solo.remove(j);
-										}
-									}
-								}
-							}
-						}
+				Collections.sort(doubl);
+				
+				int dsize = doubl.size();
+				for (int j = 0; j < dsize; j++) {
+					for (int k = 0 ; k < dsize; k++) {
+						int jq = doubl.get(j).quantity;
+						int jp = doubl.get(j).power;
+						int kq = doubl.get(k).quantity;
+						int kp = doubl.get(k).power;
 						
-						shield++;
+						if(jq == 0 ||  kq == 0) {
+							continue;
+						}
+						if(j == k && jq <= 1) {
+							continue;
+						}
+						if (jp + kp < b) {
+							continue;
+						}
+						else if(jp + kp >= b) {
+							if (jq > kq) {
+								pq.add(new Missile(jp + kp,kq));
+								jq -= kq;
+								doubl.get(j).quantity = jq;
+								doubl.get(k).quantity = 0;
+							} 
+							
+							else if (jq < kq) {
+								pq.add(new Missile(jp + kp,jq));
+								kq -= jq;
+								doubl.get(k).quantity = kq;
+								doubl.get(j).quantity = 0;
+							} 
+							
+							else {
+								if(j == k) {
+									if(jq % 2 == 0) {
+										pq.add(new Missile(jp + kp, jq / 2));
+										doubl.get(j).quantity = 0;
+									}
+									else {
+										pq.add(new Missile(jp + kp, jq / 2));
+										doubl.get(j).quantity = (jq % 2);
+									}
+									
+								}
+								else {
+									pq.add(new Missile(jp + kp,jq));
+									doubl.get(k).quantity = 0;
+									doubl.get(j).quantity = 0;
+								}
+							}
+						}
 					}
-					if (n < 0) {
-						sum -= Math.abs(n) * shield;
+				}
+				
+				int sum = 0;
+				Missile attack = null;
+				while(!pq.isEmpty()) {
+					if(n <= 0) {
+						break;
 					}
-					System.out.printf("#%d %d\n", i, sum);
+					attack = pq.poll();
+					sum += attack.power * attack.quantity;
+					n -= attack.quantity;
+				}
+
+				if(n > 0) {
+					System.out.printf("#%d %d\n",i,-1);
 				}
 				else {
-					System.out.printf("#%d %d\n", i, -1);
-				}
-				
-				
-				
-//				while (count < 2 && end) {
-//					find = 0;
-//					int min2 = 987654321;
-//					int min1 = 987654321;
-//					int first = -1;
-//					int last = -1;
-//					for (int j = ar.size() - 1; j >= 0; j--) {
-//						for (int k = j - 1; k >= 0; k--) {
-//							int power = ar.get(j).power + ar.get(k).power;
-//							if (b <= power && power < min2) {
-//								min2 = power;
-//								first = k;
-//								last = j;
-//							}
-//						}
-//					}
-////					System.out.println(first + " " + last);
-//					for (int j = ar.size() - 1; j >= 0; j--) {
-//						int power = ar.get(j).power;
-//						if (b <= ar.get(j).power && ar.get(j).power < min1) {
-//							min1 = power;
-//							last = j;
-//						}
-//					}
-//					if (min2 == 987654321 || min1 == 987654321) {
-//						break;
-//					}
-//					if(min2 <= min1) {
-//						sum += min2;
-//						find = 2;
-//					}
-//					else if(min2 > min1) {
-//						sum += min1;
-//						find = 1;
-//					}
-//					
-//					if(find == 2) {
-//						if (ar.get(last).quantity > 1) {
-////							System.out.println("a");
-//							ar.get(last).quantity--;
-//						} 
-//						else if (ar.get(last).quantity == 1) {
-////							System.out.println("b");
-//							ar.remove(last);
-//						}
-//						
-//						if (ar.get(first).quantity > 1) {
-////							System.out.println("c");
-//							ar.get(first).quantity--;
-//						} 
-//						else if (ar.get(first).quantity == 1) {
-////							System.out.println("d");
-//							ar.remove(first);
-//						}
-//					}
-//					else if(find == 1) {
-//						if (ar.get(last).quantity > 1) {
-////							System.out.println("a");
-//							ar.get(last).quantity--;
-//						} else if (ar.get(last).quantity == 1) {
-////							System.out.println("b");
-//							ar.remove(last);
-//						}
-//					}
-////					for (int j = ar.size() - 1; j >= 0; j--) {
-////						System.out.println(ar.get(j));
-////					}
-////					System.out.println();
-//					count++;
-//				}
-
-				
-
+					if(n == 0) {
+						System.out.printf("#%d %d\n",i,sum);
+					}
+					else {
+						sum -= Math.abs(n) * attack.power;
+						System.out.printf("#%d %d\n",i,sum);
+					}
+				}				
 			}
 		} catch (NumberFormatException | IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
