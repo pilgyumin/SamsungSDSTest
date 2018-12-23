@@ -68,7 +68,6 @@ public class Main {
 				}
 				
 				Collections.sort(input, new Comparator<Node>() {
-
 					@Override
 					public int compare(Node o1, Node o2) {
 						if(Math.abs(o1.x - o1.y) < Math.abs(o2.x - o2.y)) {
