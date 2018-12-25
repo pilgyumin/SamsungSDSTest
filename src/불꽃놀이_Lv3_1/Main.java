@@ -110,7 +110,7 @@ public class Main {
 						sum = sum.add(max.subtract(result[j]));
 					}
 				}
-				
+				 
 				System.out.printf("#%d %s\n",i,sum.toString());
 				
 //				for(int j = 0; j < result.length; j++) {

@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.LinkedList;
 import java.util.PriorityQueue;
 
 public class Main {
@@ -23,18 +24,18 @@ public class Main {
 
 		@Override
 		public int compareTo(Node arg0) {
-			if(this.x < arg0.x) {
-				return -1;
-			}
-			else if(this.x > arg0.x) {
+			if(this.x > arg0.x) {
 				return 1;
 			}
+			else if(this.x < arg0.x) {
+				return -1;
+			}
 			else {
-				if(this.y < arg0.y) {
-					return -1;
-				}
-				else if(this.y > arg0.y) {
+				if(this.y > arg0.y) {
 					return 1;
+				}
+				else if(this.y < arg0.y) {
+					return -1;
 				}
 			}
 			return 0;
@@ -46,11 +47,6 @@ public class Main {
 		}
 
 	}
-	
-	private static ArrayList<Node> input;
-	private static PriorityQueue<Node> xComp;
-	private static ArrayList<Node> yComp;
-	private static ArrayList<Node> ans;
 
 	public static void main(String[] args) {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -58,126 +54,26 @@ public class Main {
 			int test = Integer.parseInt(br.readLine());
 			for(int i = 1; i <= test; i++) {
 				int n = Integer.parseInt(br.readLine());
-				input = new ArrayList<Node>();
-				xComp = new PriorityQueue<Node>();
-				yComp = new ArrayList<Node>();
-				ans = new ArrayList<Node>();
+				ArrayList<Node> input = new ArrayList<Node>();
+				ArrayList<Node> ans = new ArrayList<Node>();
 				for(int j = 1; j <= n; j++) {
 					String[] s = br.readLine().split(" ");
 					input.add(new Node(Integer.parseInt(s[0]),Integer.parseInt(s[1]),j));
 				}
 				
-				Collections.sort(input, new Comparator<Node>() {
-					@Override
-					public int compare(Node o1, Node o2) {
-						if(Math.abs(o1.x - o1.y) < Math.abs(o2.x - o2.y)) {
-							return -1;
-						}
-						else if(Math.abs(o1.x - o1.y) > Math.abs(o2.x - o2.y)) {
-							return 1;
-						}
-						else {
-							if(o1.x < o2.x) {
-								return -1;
-							}
-							else if(o1.x > o2.x) {
-								return 1;
-							}
-							else {
-								if(o1.y < o2.y) {
-									return -1;
-								}
-								else if(o1.y > o2.y) {
-									return 1;
-								}
-							}
-						}
-						return 0;
-					}
-				});
-//				
-//				for(int j = 0; j < input.size(); j++) {
-//					System.out.println(input.get(j));
-//				}
-//				System.out.println();
-				
+				Collections.sort(input);
+
 				Node min = input.get(0);
 				int size = input.size();
-				
-				for(int j = 1; j < size; j++) {
+				ans.add(min);
+				for(int j = 0; j < size; j++) {
 					Node comp = input.get(j);
-					if(min.x < comp.x && min.y < comp.y) {
-						continue;
+					if(min.y > comp.y) {
+						ans.add(comp);
+						min = input.get(j);
 					}
-					if(min.x > comp.x && min.y > comp.y) {
-						min.x = comp.x;
-						min.y = comp.y;
-						min.num = comp.num;
-						continue;
-					}
-					xComp.add(comp);
 				}
-				
-				xComp.add(min);
-				
-				size = xComp.size();
-//				for(int j = 0; j < size; j++) {
-//					System.out.println(xComp.poll());
-//				}
-//				System.out.println();
-				
-				Node prevx = xComp.poll();
-				Node add = new Node(prevx.x,prevx.y,prevx.num);
-				while(!xComp.isEmpty()) {
-					Node comp = xComp.poll();
-					if(prevx.x == comp.x && prevx.y < comp.y) {
-						continue;
-					}
-					yComp.add(comp);
-					prevx = comp;
-				}
-				yComp.add(add);
-				
-				size = yComp.size();
-//				for(int j = 0; j < size; j++) {
-//					System.out.println(yComp.get(j));
-//				}
-//				System.out.println();
-//				
-				Collections.sort(yComp, new Comparator<Node>() {
 
-					@Override
-					public int compare(Node o1, Node o2) {
-						if(o1.y < o2.y) {
-							return -1;
-						}
-						else if(o1.y > o2.y){
-							return 1;
-						}
-						else {
-							if(o1.x < o2.x) {
-								return -1;
-							}
-							else if(o1.x > o2.x) {
-								return 1;
-							}
-						}
-						return 0;
-					}
-				});
-				
-				size = yComp.size();
-				Node prevy = yComp.get(0);
-				ans.add(prevy);
-				for(int j = 1; j < size; j++) {
-					Node comp = yComp.get(j);
-					if(prevy.y == comp.y && prevy.x < comp.x) {
-						continue;
-					}
-					ans.add(comp);
-					prevy = comp;
-				}
-				
 				Collections.sort(ans);
 
 				System.out.printf("#%d ",i);
