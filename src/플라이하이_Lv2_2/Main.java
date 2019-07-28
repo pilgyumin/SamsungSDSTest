@@ -1,4 +1,4 @@
-package ÇÃ¶óÀÌÇÏÀÌ_Lv2_2;
+package í”Œë¼ì´í•˜ì´_Lv2_2;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -115,13 +115,6 @@ public class Main {
 					}
 				}
 			}
-//			for(int i = 1; i <= n; i++) {
-//				for(int j = 1; j <= n; j++) {
-//					System.out.print(cache[i][j] + " ");
-//				}
-//				System.out.println();
-//			}
-//			System.out.println();
 			bw.write("#" + t + " " + ans + "\n");
 		}
 		bw.flush();
